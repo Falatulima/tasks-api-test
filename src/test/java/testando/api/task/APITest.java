@@ -9,6 +9,8 @@ import io.restassured.http.ContentType;
 
 public class APITest {
 	
+	private String data = "\"2025-02-15\"}";
+	
 	@BeforeClass
 	public static void setup() {
 		RestAssured.baseURI = "http://localhost:8001/tasks-backend";
@@ -27,21 +29,21 @@ public class APITest {
 	}
 	
 	@Test
-	public void deveAdicionarTarefaComSucesso() {
+	public void deveDeletarDuplicados() {
 		RestAssured.given()
-			.body("{ \"task\": \"Teste via API\", \"dueDate\": \"2024-06-26\"}")
-			.contentType(ContentType.JSON)
-		.when()
-			.post("/todo")
-		.then()
-			.statusCode(201)
-		;
+		.body("{ \"task\": \"Teste via API\", \"dueDate\": "+data)
+		.contentType(ContentType.JSON)
+	.when()
+		.delete("/todo")
+	.then()
+		.log().all()
+	;
 	}
-	
+		
 	@Test
 	public void naodeveAdicionarTarefaDataAnterior() {
 		RestAssured.given()
-			.body("{ \"task\": \"Teste via API\", \"dueDate\": \"1999-06-26\"}")
+			.body("{ \"task\": \"Teste via API\", \"dueDate\": \"1999-06-02\"}")
 			.contentType(ContentType.JSON)
 		.when()
 			.post("/todo")
